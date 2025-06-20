@@ -1,0 +1,61 @@
+from typing import List
+
+class Solution:
+    def wordBreak(self, s: str, wordDict: List[str]) -> List[str]:
+        word_set = set(wordDict)
+        memo = {}
+
+        def backtrack(start_index: int) -> List[str]:
+            if start_index in memo:
+                return memo[start_index]
+            
+            if start_index == len(s):
+                return [""]
+
+            results = []
+            for end_index in range(start_index, len(s)):
+                word = s[start_index : end_index + 1]
+                
+                if word in word_set:
+                    sentences_for_suffix = backtrack(end_index + 1)
+                    
+                    for suffix_sentence in sentences_for_suffix:
+                        if suffix_sentence:
+                            results.append(word + " " + suffix_sentence)
+                        else:
+                            results.append(word)
+            
+            memo[start_index] = results
+            return results
+
+        return backtrack(0)
+
+if __name__ == '__main__':
+    solver = Solution()
+
+    print("--- Test Case 1 ---")
+    s1 = "catsanddog"
+    wordDict1 = ["cat", "cats", "and", "sand", "dog"]
+    print(f"Input String: '{s1}'")
+    print(f"Dictionary: {wordDict1}")
+    result1 = solver.wordBreak(s1, wordDict1)
+    print(f"Output Sentences: {sorted(result1)}") 
+    print("-" * 20)
+
+    print("--- Test Case 2 ---")
+    s2 = "pineapplepenapple"
+    wordDict2 = ["apple", "pen", "applepen", "pine", "pineapple"]
+    print(f"Input String: '{s2}'")
+    print(f"Dictionary: {wordDict2}")
+    result2 = solver.wordBreak(s2, wordDict2)
+    print(f"Output Sentences: {sorted(result2)}")
+    print("-" * 20)
+
+    print("--- Test Case 3 (No Solution) ---")
+    s3 = "catsandog"
+    wordDict3 = ["cats", "dog", "sand", "and", "cat"]
+    print(f"Input String: '{s3}'")
+    print(f"Dictionary: {wordDict3}")
+    result3 = solver.wordBreak(s3, wordDict3)
+    print(f"Output Sentences: {sorted(result3)}")
+    print("-" * 20)
